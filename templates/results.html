@@ -1,0 +1,35 @@
+<div class="container mt-5">
+  <div class="container-fluid d-flex justify-content-around flex-wrap">
+    {% for i in centers %}
+    <div class="_img text-center">
+      <img src="{{url_for('static', filename=i+'.png')}}" class="rounded w-100" />
+      <h4>{{i}}</h4>
+    </div>
+    {% endfor %}
+  </div>
+  <table class="table table-bordered table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">centers</th>
+        <th scope="col">Partition Coefficient</th>
+        <th scope="col">Classification Entropy</th>
+        <th scope="col">Xie and Beni</th>
+        <th scope="col">Subarea Coefficient</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">{{ centers }}</th>
+        <td>{{partition_coefficient}}</td>
+        <td>{{classification_entropy}}</td>
+        <td>{{xie_beni}}</td>
+        <td>{{subarea_coefficient}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<style>
+  ._img {
+    width: 33%;
+  }
+</style>
