@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex justify-content-around flex-wrap">
     {% for i in centers %}
     <div class="_img text-center">
-      <img src="{{url_for('static', filename=i+'.png')}}" class="rounded w-100" />
+      <img src="{{url_for('static', filename='/images/' + i + '.png')}}" class="rounded w-100" />
       <h4>{{i}}</h4>
     </div>
     {% endfor %}
@@ -27,6 +27,7 @@
       </tr>
     </tbody>
   </table>
+  <a class="btn btn-primary btn-lg btn-block" href="/download" role="button">download the results</a>
 </div>
 <style>
   ._img {

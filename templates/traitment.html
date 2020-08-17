@@ -204,27 +204,28 @@
                     <input required type="number" class="form-control" placeholder="Generation" name="generation">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="Minimum Frequency"
+                    <input required type="number" step="any" class="form-control" placeholder="Minimum Frequency"
                         name="min_frequency">
                 </div>
 
             </div>
             <div class="form-row mb-3">
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="Maximum Frequency"
+                    <input required type="number" step="any" class="form-control" placeholder="Maximum Frequency"
                         name="max_frequency">
                 </div>
                 <div class="col">
                     <input required type="number" class="form-control" placeholder="Number of segments" name="segments">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="the degre of fuzziness"
+                    <input required type="number" step="any" class="form-control" placeholder="the degre of fuzziness"
                         name="fuzziness">
                 </div>
             </div>
             <div class="form-row text-center">
                 <div class="col">
-                    <button class="btn btn-light">Submit</button>
+                    <button class="bat btn-light">Use the best parametres</button>
+                    <button class="btn btn-light" type="submit">Submit</button>
                 </div>
             </div>
         </form>
@@ -244,20 +245,22 @@
                     <input required type="number" class="form-control" placeholder="Generation" name="generation">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="Minimum velocity"
+                    <input required type="number" step="any" class="form-control" placeholder="Minimum velocity"
                         name="min_velocity">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="Maximum velocity"
+                    <input required type="number" step="any" class="form-control" placeholder="Maximum velocity"
                         name="max_velocity">
                 </div>
             </div>
             <div class="form-row mb-3">
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="first constant" name="constant1">
+                    <input required type="number" step="any" class="form-control" placeholder="first constant"
+                        name="constant1">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="second constant" name="constant2">
+                    <input required type="number" step="any" class="form-control" placeholder="second constant"
+                        name="constant2">
                 </div>
                 <div class="col">
                     <input required type="number" step="any" class="form-control" placeholder="Weight" name="weight">
@@ -268,13 +271,14 @@
                     <input required type="number" class="form-control" placeholder="Number of segments" name="segments">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="the degre of fuzziness"
+                    <input required type="number" step="any" class="form-control" placeholder="the degre of fuzziness"
                         name="fuzziness">
                 </div>
             </div>
             <div class="form-row text-center">
                 <div class="col">
-                    <button class="btn btn-light">Submit</button>
+                    <button class="pso btn-light">Use the best parametres</button>
+                    <button class="btn btn-light" type="submit">Submit</button>
                 </div>
             </div>
         </form>
@@ -294,30 +298,31 @@
                     <input required type="number" class="form-control" placeholder="Generation" name="generation">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="F..." name="f">
+                    <input required type="number" step="any" class="form-control" placeholder="F..." name="f">
                 </div>
             </div>
             <div class="form-row mb-3">
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="L..." name="l">
+                    <input required type="number" step="any" class="form-control" placeholder="L..." name="l">
                 </div>
                 <div class="col">
                     <input required type="number" class="form-control" placeholder="Number of segments" name="segments">
                 </div>
                 <div class="col">
-                    <input required type="number" class="form-control" placeholder="the degre of fuzziness"
+                    <input required type="number" step="any" class="form-control" placeholder="the degre of fuzziness"
                         name="fuzziness">
                 </div>
             </div>
             <div class="form-row text-center">
                 <div class="col">
-                    <button class="btn btn-light">Submit</button>
+                    <button class="gao btn-light">Use the best parametres</button>
+                    <button class="btn btn-light" type="submit">Submit</button>
                 </div>
             </div>
         </form>
 
         <!-- Manual Centers FORM -->
-        <form class="d-none" action="/traitment/{{ imageName }}" method="POST">
+        <!-- <form class="d-none" action="/traitment/{{ imageName }}" method="POST">
             <div class="form-row mb-3">
                 <div class="d-none col">
                     <input type="text" value="Manual Centers" class="form-control" placeholder="method name"
@@ -339,7 +344,7 @@
                     <button class="btn btn-light">Submit</button>
                 </div>
             </div>
-        </form>
+        </form> -->
     </div>
     <script>
         $(function () {
@@ -398,6 +403,31 @@
                     })
             })
         });
+        $("button.gao").on('click', function (e) {
+            let best = []
+            let inputs = $(this).parent().parent().parent().find("input")
+            $(inputs[3]).val("1")
+            $(inputs[4]).val("1.5")
+            $(inputs[6]).val("2")
+        })
+        $("button.bat").on('click', function (e) {
+            let best = []
+            let inputs = $(this).parent().parent().parent().find("input")
+            $(inputs[3]).val("0")
+            $(inputs[4]).val("0.2")
+            $(inputs[6]).val("2")
+
+        })
+        $("button.pso").on('click', function (e) {
+            let best = []
+            let inputs = $(this).parent().parent().parent().find("input")
+            $(inputs[3]).val("-100")
+            $(inputs[4]).val("100")
+            $(inputs[5]).val("2")
+            $(inputs[6]).val("2")
+            $(inputs[7]).val("0.5")
+            $(inputs[9]).val("2")
+        })
     </script>
 </body>
 

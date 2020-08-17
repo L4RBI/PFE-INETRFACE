@@ -1,12 +1,19 @@
 import glob
 import matplotlib.pyplot as plt
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 import os
 from metaheuritics import *
 from tools import *
 from fuzzy import *
 from indexes import *
 import matplotlib
+from zipfile import ZipFile
+import os
+import pdfkit
+from os.path import basename
+config = pdfkit.configuration(
+    wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+
 matplotlib.use('Agg')
 app = Flask(__name__, static_url_path='/static')
 
@@ -16,6 +23,9 @@ app.config['UPLOADED_PHOTOS_DEST'] = 'static\\img'
 
 @app.route('/', methods=['GET', 'POST'])
 def upload():
+    files = glob.glob(r'static\\images/*')
+    for items in files:
+        os.remove(items)
     if request.method == 'POST' and 'image' in request.files:
         file = request.files["image"]
         print(file)
@@ -27,6 +37,9 @@ def upload():
 
 @app.route('/traitment/<imageName>', methods=['GET', 'POST'])
 def traitment(imageName):
+    files = glob.glob(r'static\\images/*')
+    for items in files:
+        os.remove(items)
     if request.method == "POST":
         path = "static\\img\\" + imageName
         x = metaheuristics(path=path, size=int(
@@ -59,9 +72,24 @@ def traitment(imageName):
         for i in range(len(segs)):
             plt.imshow(segs[i], cmap='gray')
             plt.savefig(
-                'static\\' + C[i] + '.png', bbox_inches='tight')
-        return render_template('results.html', partition_coefficient=p, classification_entropy=c, xie_beni=x, subarea_coefficient=s, centers=C)
+                'static\images\\' + C[i] + '.png', bbox_inches='tight')
+        return render_template('results.html', partition_coefficient=p,
+                               classification_entropy=c, xie_beni=x, subarea_coefficient=s, centers=C)
     return render_template('traitment.html', imageName=imageName)
+
+
+@app.route('/download')
+def download():
+    # create a ZipFile object
+    with ZipFile('static/resutls.zip', 'w') as zipObj:
+        # Iterate over all the files in directory
+        for folderName, subfolders, filenames in os.walk("static\images"):
+            for filename in filenames:
+                # create complete filepath of file in directory
+                filePath = os.path.join(folderName, filename)
+                # Add file to zip
+                zipObj.write(filePath, basename(filePath))
+    return send_from_directory("static", "resutls.zip", as_attachment=True)
 
 
 if __name__ == '__main__':
