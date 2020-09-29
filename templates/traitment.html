@@ -77,6 +77,12 @@
             top: 50%;
         }
 
+        .wait {
+            /* transform: translate(-50%, -75%); */
+            position: absolute;
+            top: 60%;
+        }
+
         .tri {
             position: absolute;
             -webkit-animation: pulse 750ms ease-in infinite;
@@ -164,7 +170,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">click here to choose which method you want to use.</a>
+        <a class="navbar-brand" href="#">choose what method you would like to use:</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -183,12 +189,23 @@
                         <button class="dropdown-item" data-order="2">
                             GrassHopper Optimization Algorithm
                         </button>
-                        <button class="dropdown-item" data-order="3">Manual Centers</button>
                 </li>
             </ul>
         </div>
     </nav>
     <div class="container mt-5">
+        <div class="container-fluid d-flex justify-content-around flex-wrap ">
+            <div class="_img text-center d-flex flex-column justify-content-between align-items-center">
+                <img src="{{url_for('static', filename='/img/'+ imageName)}}" class="img-fluid d-block w-100"
+                    alt="Responsive image">
+                <h5>The Image you uploaded</h5>
+            </div>
+            <div class="_img text-center d-flex flex-column justify-content-between align-items-center">
+                <img src="{{url_for('static', filename='/img/histogram.png')}}" class="img-fluid d-block w-100"
+                    alt="Responsive image">
+                <h5>It's Histogram</h5>
+            </div>
+        </div>
         <!-- Bat Optimization algorithm FORM -->
         <form class="d-none" action="/traitment/{{ imageName }}" method="POST">
             <div class="form-row mb-3">
@@ -204,22 +221,42 @@
                     <input required type="number" class="form-control" placeholder="Generation" name="generation">
                 </div>
                 <div class="col">
-                    <input required type="number" step="any" class="form-control" placeholder="Minimum Frequency"
-                        name="min_frequency">
+                    <input required type="number" step="any" class="form-control" placeholder="initR" name="init_R">
                 </div>
 
             </div>
             <div class="form-row mb-3">
                 <div class="col">
+                    <input required type="number" step="any" class="form-control" placeholder="initA" name="init_A">
+                </div>
+                <div class="col">
+                    <input required type="number" step="any" class="form-control" placeholder="Minimum Frequency"
+                        name="min_frequency">
+                </div>
+                <div class="col">
                     <input required type="number" step="any" class="form-control" placeholder="Maximum Frequency"
                         name="max_frequency">
+                </div>
+            </div>
+            <div class="form-row mb-3">
+                <div class="col">
+                    <input required type="number" step="any" class="form-control" placeholder="Alpha" name="alpha">
+                </div>
+                <div class="col">
+                    <input required type="number" step="any" class="form-control" placeholder="Gamma" name="gamma">
                 </div>
                 <div class="col">
                     <input required type="number" class="form-control" placeholder="Number of segments" name="segments">
                 </div>
+
+            </div>
+            <div class="form-row mb-3">
                 <div class="col">
                     <input required type="number" step="any" class="form-control" placeholder="the degre of fuzziness"
                         name="fuzziness">
+                </div>
+                <div class="col">
+                    <input required type="number" class="form-control" placeholder="Number of FCM iterations" name="n">
                 </div>
             </div>
             <div class="form-row text-center">
@@ -263,16 +300,26 @@
                         name="constant2">
                 </div>
                 <div class="col">
-                    <input required type="number" step="any" class="form-control" placeholder="Weight" name="weight">
+                    <input required type="number" step="any" class="form-control" placeholder="minimum Weight"
+                        name="wmin">
                 </div>
             </div>
             <div class="form-row mb-3">
+                <div class="col">
+                    <input required type="number" step="any" class="form-control" placeholder="maximum weight"
+                        name="wmax">
+                </div>
                 <div class="col">
                     <input required type="number" class="form-control" placeholder="Number of segments" name="segments">
                 </div>
                 <div class="col">
                     <input required type="number" step="any" class="form-control" placeholder="the degre of fuzziness"
                         name="fuzziness">
+                </div>
+            </div>
+            <div class="form-row mb-3">
+                <div class="col">
+                    <input required type="number" class="form-control" placeholder="Number of FCM iterations" name="n">
                 </div>
             </div>
             <div class="form-row text-center">
@@ -311,6 +358,11 @@
                 <div class="col">
                     <input required type="number" step="any" class="form-control" placeholder="the degre of fuzziness"
                         name="fuzziness">
+                </div>
+            </div>
+            <div class="form-row mb-3">
+                <div class="col">
+                    <input required type="number" class="form-control" placeholder="Number of FCM iterations" name="n">
                 </div>
             </div>
             <div class="form-row text-center">
@@ -391,6 +443,9 @@
                             <div class='tri'></div>
                             <div class='tri invert'></div>
                         </div>
+                        <div class="wait">
+                        <h4 class="text-center">Please wait while the results are being processed, The execution time may vary according to : population volume, number of generations, number of segments end the method chosen.</h4>
+                        </div>
                         `);
                     }
                 })
@@ -405,30 +460,53 @@
         });
         $("button.gao").on('click', function (e) {
             let best = []
+            //ImmutableMultiDict([('method', 'GrassHopper Optimization Algorithm'), ('population', '2'), ('generation', '2'), ('f', '2'), ('l', '1'), ('segments', '2'), ('fuzziness', '2'), ('n', '2')])
             let inputs = $(this).parent().parent().parent().find("input")
-            $(inputs[3]).val("1")
+            $(inputs[1]).val("30")
+            $(inputs[2]).val("1000")
+            $(inputs[3]).val("0.5")
             $(inputs[4]).val("1.5")
             $(inputs[6]).val("2")
+            $(inputs[7]).val("10")
         })
         $("button.bat").on('click', function (e) {
             let best = []
+            //([('method', 'Bat Optimization algorithm'), ('population', '10'), ('generation', '10'), ('init_R', '10'), ('init_A', '10'), ('min_frequency', '10'), ('max_frequency', '10'), ('alpha', '10'), ('gamma', '10'), ('segments', '10'), ('fuzziness', '10'), ('n', '10')])
             let inputs = $(this).parent().parent().parent().find("input")
-            $(inputs[3]).val("0")
-            $(inputs[4]).val("0.2")
-            $(inputs[6]).val("2")
+            $(inputs[1]).val("30")
+            $(inputs[2]).val("1000")
+            $(inputs[3]).val("0.5")
+            $(inputs[4]).val("0.95")
+            $(inputs[5]).val("0")
+            $(inputs[6]).val("10")
+            $(inputs[7]).val("0.9")
+            $(inputs[8]).val("0.9")
+            $(inputs[10]).val("2")
+            $(inputs[11]).val("10")
+
 
         })
         $("button.pso").on('click', function (e) {
             let best = []
+            //ImmutableMultiDict([('method', 'Particul Swarm Optimization'), ('population', '2'), ('generation', '2'), ('min_velocity', '2'), ('max_velocity', '2'), ('constant1', '2'), ('constant2', '2'), ('wmin', '2'), ('wmax', '2'), ('segments', '2'), ('fuzziness', '22'), ('n', '2')])
             let inputs = $(this).parent().parent().parent().find("input")
+            $(inputs[1]).val("30")
+            $(inputs[2]).val("1000")
             $(inputs[3]).val("-100")
             $(inputs[4]).val("100")
-            $(inputs[5]).val("2")
+            $(inputs[5]).val("1.5")
             $(inputs[6]).val("2")
-            $(inputs[7]).val("0.5")
-            $(inputs[9]).val("2")
+            $(inputs[7]).val("0.4")
+            $(inputs[8]).val("0.5")
+            $(inputs[10]).val("2")
+            $(inputs[11]).val("10")
         })
     </script>
+    <style>
+        ._img {
+            width: 33%;
+        }
+    </style>
 </body>
 
 </html>

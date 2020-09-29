@@ -17,12 +17,13 @@ class metaheuristics:
         self.M = M
         self.histogram = BAT.Histogram(path)
 
-    def bat(self, N, GEN, bmin=0, bmax=255, fmin=0, fmax=0.2):
+    def bat(self, N, GEN, bmin=0, bmax=255, fmin=0, fmax=0.2, init_R=0.5, init_A=0.95, alpha=0.9, gamma=0.9):
         toolbox = base.Toolbox()
         toolbox.register("bat", BAT.generate, m=self.m, bmin=bmin, bmax=bmax,
-                         histogram=self.histogram, size=self.size, init_R=0.5, init_A=0.95)
+                         histogram=self.histogram, size=self.size, init_R=init_R, init_A=init_A)
         toolbox.register("population", tools.initRepeat, list, toolbox.bat)
-        toolbox.register("update", BAT.updateBat, size=self.size, dim=self.dim)
+        toolbox.register("update", BAT.updateBat, size=self.size,
+                         dim=self.dim, alpha=alpha, gamma=gamma)
         Population = toolbox.population(n=N)
         mean_A = 0
         A = 0
@@ -45,14 +46,14 @@ class metaheuristics:
         x = datetime.datetime.now() - begin_time
         return best, x
 
-    def pso(self, N, GEN, pmin=0, pmax=255, vmin=-100, vmax=100, constant1=2, constant2=2, weight=0.5):
+    def pso(self, N, GEN, pmin=0, pmax=255, vmin=-100, vmax=100, constant1=2, constant2=2, maxw=0.5, minw=0.4):
         toolbox = base.Toolbox()
         toolbox.register("particle", PSO.generate, pmin=pmin, pmax=pmax, vmin=vmin,
                          vmax=vmax, dim=self.dim, size=self.size, histogram=self.histogram)
         toolbox.register("population", tools.initRepeat,
                          list, toolbox.particle)
         toolbox.register("update", PSO.updateParticle, constant1=constant1, constant2=constant2,
-                         weight=weight, vmin=vmin, vmax=vmax, dim=self.dim, data=self.histogram)
+                         vmin=vmin, vmax=vmax, dim=self.dim, data=self.histogram, maxw=maxw, minw=minw)
         Population = toolbox.population(n=N)
         best = None
         for particule in Population:
@@ -69,7 +70,7 @@ class metaheuristics:
                     best.fitness.values = particule.fitness.values
 
             for particule in Population:  # updating the position for each particule.
-                toolbox.update(particule, best)
+                toolbox.update(particule, best, GEN=GEN, g=g)
         x = datetime.datetime.now() - begin_time
         return best, x
 
@@ -90,6 +91,7 @@ class metaheuristics:
             if not best or best.fitness > agent.fitness:
                 best = GAO.creator.Agent(agent)
                 best.fitness = agent.fitness
+        begin_time = datetime.datetime.now()
         for g in range(GEN):  # runing the GAO Gen times
             c = GAO.compute_c(g + 1, GEN)  # computing c
             for agent in Swarm:  # updating each agent using the best solution found
@@ -98,5 +100,5 @@ class metaheuristics:
                 if not best or best.fitness > agent.fitness:
                     best = GAO.creator.Agent(agent)
                     best.fitness = agent.fitness
-                    print("new best:", best)
-        return best
+        x = datetime.datetime.now() - begin_time
+        return best, x
